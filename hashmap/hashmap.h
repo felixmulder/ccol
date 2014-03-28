@@ -21,8 +21,9 @@ typedef struct hashmap_t {
 /* 
  * Creates a generic hash map of size s with a hashing function
  * Params:
- *       s, initial size of hash map
- *    func, hash function to be used by the map
+ *      first function, hash function to be used by the map
+ *      second function, key comp function, should return non-zero for true
+ *      size_t, initial size of hash map
  *
  * Returns: a pointer to a hashmap_t
  */ 
