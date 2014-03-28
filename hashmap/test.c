@@ -21,8 +21,8 @@ int main(void)
         if (map) {
                 printf("not NULL!\n");
                 printf("hash function: %d\n", map->hash_func(&elem));
-                printf("insert elem (non-zero == sucess): %d\n",
-                       put_elem(&elem,&elem,map));
+                printf("put_elem(1,1,map)\n");
+                map = put_elem(&elem, &elem, map);
                 printf("find elem 1: %d\n", *(int *)get_elem(&elem, map));
         } else
                 printf("null :(\n");

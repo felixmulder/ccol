@@ -19,23 +19,39 @@ hashmap_t *create_map(int (*hash_func)(void *),
  * This function will rehash the map, doubling its size and thus the spread
  * of elements in the map
  */
-static void rehash(hashmap_t *map)
+static void *rehash(hashmap_t *map)
 {
-        //TODO: Implement
+        hashmap_t *old_map = map;
+        map = create_map(old_map->hash_func,
+                         old_map->comp_key,
+                         old_map->cap * 2);
+        if (!map) {
+                fprintf(stderr, "couldn't allocate memory for rehash\n");
+                /* Should return zero value instead? Hmm... */
+                exit(1);
+        }
+
+        for (int i = 0; i < map->cap; i++) {
+                node_t *node = old_map->nodes[i];
+                while (node) {
+                        put_elem(node->key, node->value, map);
+                        node = node->succ;
+                }
+        }
+
+        free(old_map);
+        return map;
 }
 
-int put_elem(void *key, void *value, hashmap_t *map)
+hashmap_t *put_elem(void *key, void *value, hashmap_t *map)
 {
-        if (map->size > map->threshold * map->cap)
-                rehash(map);
+        int i = map->hash_func(key) % map->cap;
 
-        int i = map->hash_func(key) % map->size;
         node_t *node = malloc(sizeof(node_t));
 
         if (!node) {
-                fprintf(stderr, "could not allocate memory for node");
-                /* Failure! Return zero... */
-                return 0;
+                fprintf(stderr, "could not allocate memory for node\n");
+                return map;
         }
 
         node->key = key;
@@ -50,13 +66,16 @@ int put_elem(void *key, void *value, hashmap_t *map)
                 temp->succ = node;
         }
         
-        /* Success, return non-zero value */
-        return 1;
+        map->size++;
+        if (map->size > map->threshold * map->cap) {
+                map = rehash(map);
+        }
+        return map;
 }
 
 void *get_elem(void *key, hashmap_t *map)
 {
-        int i = map->hash_func(key) % map->size;
+        int i = map->hash_func(key) % map->cap;
         node_t *node = map->nodes[i];
         while(node) {
                 if (map->comp_key(key, node->key))

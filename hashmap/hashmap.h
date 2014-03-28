@@ -13,7 +13,7 @@ typedef struct hashmap_t {
         int (*hash_func)(void *);
         int (*comp_key)(void *, void *);
         size_t cap;
-        size_t size;
+        int size;
         double threshold;
         node_t *nodes[];
 } hashmap_t;
@@ -31,9 +31,11 @@ hashmap_t *create_map(int (*)(void *),int (*)(void *,void *), size_t s);
 
 /* 
  * Inserts an element in the hash map using the previously supplied function.
- * Will return a non-zero value if insert successful
+ * Will return a new pointer to the array, this function should thus always
+ * be used in this fashion:
+ *      map = put_elem(key, value, map);
  */ 
-int put_elem(void *, void *, hashmap_t *);
+hashmap_t *put_elem(void *, void *, hashmap_t *);
 
 /*
  * Will attempt to fetch an element with the specified key, from the specified
