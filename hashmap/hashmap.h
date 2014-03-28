@@ -1,18 +1,42 @@
-#ifndef HASHMAP_H
-#define HASHMAP_H
-
+#pragma once
 #include <stdlib.h>
+#include <stdio.h>
 
-static void **array;
-static int (*hash_func)(void *);
+typedef struct node_t node_t;
+struct node_t {
+        node_t *succ;
+        void *key;
+        void *value;
+};
 
-/* Creates a generic hashmap of size s with a hashing function */
-void create_map(int (*func)(void *), size_t s);
+typedef struct hashmap_t {
+        int (*hash_func)(void *);
+        int (*comp_key)(void *, void *);
+        size_t cap;
+        size_t size;
+        double threshold;
+        node_t *nodes[];
+} hashmap_t;
+
+/* 
+ * Creates a generic hash map of size s with a hashing function
+ * Params:
+ *       s, initial size of hash map
+ *    func, hash function to be used by the map
+ *
+ * Returns: a pointer to a hashmap_t
+ */ 
+hashmap_t *create_map(int (*)(void *),int (*)(void *,void *), size_t s);
 
 /* 
  * Inserts an element in the hash map using the previously supplied function.
  * Will return a non-zero value if insert successful
  */ 
-int insert_elem(void *);
+int put_elem(void *, void *, hashmap_t *);
 
-#endif
+/*
+ * Will attempt to fetch an element with the specified key, from the specified
+ * map. Returns a void pointer to the value or NULL if the key doesn't exist in
+ * the map.
+ */
+void *get_elem(void *, hashmap_t *);
