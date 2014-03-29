@@ -33,11 +33,29 @@ bheap_t *create_bheap(int (*)(void *, void *), size_t);
 bheap_t *add_elem(void *, bheap_t *);
 
 /*
- * Removes a specified element from the heap.
- * Params:      elem, heap
- * Post:        the elem for which comp_func returns zero is removed
+ * Removes the root and returns it
+ * Params:      heap
  */
-int rm_elem(void *, bheap_t *);
+void const *peek_root(bheap_t *);
+
+/*
+ * Removes and returns the root element of the heap
+ * Returns:     root element
+ */
+void *poll_root(bheap_t *);
+
+/*
+ * Adds the elements from src to dest
+ * Params:      src, dest
+ * Returns:     pointer to concatenated heap, 
+ * Post:        the src heap will be freed, all pointers to it should thus be
+ *              considered invalid. The dest heap will be freed if the bounds of
+ *              its array would have been overwritten by src. Thus a usage such
+ *              as this is recommended:
+ *
+ *              dest = add_heap(src, dest);
+ */
+bheap_t *add_heap(bheap_t *, bheap_t *);
 
 /*
  * Will free the entire heap with all its elements from memory
