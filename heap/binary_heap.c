@@ -100,10 +100,10 @@ void *poll_root(bheap_t *heap)
 
 bheap_t *add_heap(bheap_t *src, bheap_t *dest)
 {
-        //TODO: Implement...
-        fprintf(stderr, "<%s:%d>\tNot yet implemented.\n",__func__,__LINE__);
-        exit(1);
-        return NULL;
+        for (int i = 0; i < src->index; i++)
+                dest = add_elem(src->elems[i], dest);
+
+        return dest;
 }
 
 void free_bheap(bheap_t *heap)

@@ -7,6 +7,7 @@ void test_insert_one();
 void test_insert_many();
 void test_peek_poll();
 void test_heap_sort();
+void test_add_heap();
 
 int silly_comp(void *elem, void *other)
 {
@@ -20,6 +21,7 @@ int main(void)
         test_insert_many();
         test_peek_poll();
         test_heap_sort();
+        test_add_heap();
         return 0;
 }
 
@@ -172,3 +174,45 @@ void test_heap_sort()
         free_bheap(heap);
         printf("passed %s\n",__func__);
 }
+
+void test_add_heap()
+{
+        bheap_t *src    = create_bheap(silly_comp, 16);
+        bheap_t *dest   = create_bheap(silly_comp, 16);
+        if (!src || !dest) {
+                fprintf(stderr,
+                        "Couldn't create heap in %s:%d\n",
+                        __func__,
+                        __LINE__);
+                exit(1);
+        }
+
+        for (int i = 1; i <= 20; i++) {
+                int *e1 = malloc(sizeof(int));
+                int *e2 = malloc(sizeof(int));
+                *e1 = i;
+                *e2 = i+20;
+                src     = add_elem(e1, src);
+                dest    = add_elem(e2, dest);
+        }
+
+        dest = add_heap(src, dest);
+
+        if (dest->index != 40)
+                fprintf(stderr,
+                        "<%s:%d>\t Expected size of heap %d, actual: %zu\n",
+                        __func__,__LINE__, 40, dest->index);
+
+        for (int i = 40; i > 0; i--) {
+                int elem = *(int *)poll_root(dest);
+                if (elem != i) {
+                        fprintf(stderr,
+                                "<%s:%d>\tExpected \"%d\", found \"%d\"\n",
+                                __func__,__LINE__,i,elem);
+                        exit(1);
+                }
+        }
+
+        printf("passed %s\n",__func__);
+}
+
