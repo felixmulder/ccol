@@ -15,69 +15,122 @@ int stupid_comp(void *key, void *other) {
         return *(int *)key == *(int *)other;
 }
 
-hashmap_t *test_create();
-void test_hash(hashmap_t *);
-hashmap_t *test_put(hashmap_t *);
-void test_get(hashmap_t *);
-void test_free(hashmap_t *);
+void test_create_del();
+void test_hash();
+void test_put();
+void test_get();
 void test_concat();
 
 int main(void)
 {
-        hashmap_t *map = test_create();
-        test_hash(map);
-        map = test_put(map);
-        test_get(map);
-        test_free(map);
+        test_create_del();
+        test_hash();
+        test_put();
+        test_get();
         test_concat();
+        printf("----------------\nall tests passed\n----------------\n");
         return 0;
 }
 
 
-hashmap_t *test_create()
+void test_create_del()
 {
         hashmap_t *map = create_map(stupid_hash, stupid_comp, 16);
         if (!map) {
-                fprintf(stderr, "<%s:%d>\tCould not create map\n", __func__, __LINE__);
+                fprintf(stderr,
+                        "<%s:%d>\tCould not create map\n",
+                        __func__, __LINE__);
                 exit(1);
         }
 
-        return map;
+        free_map(map);
+        printf("passed %s\n",__func__);
 }
 
-void test_hash(hashmap_t *map)
+void test_hash()
 {
+        hashmap_t *map = create_map(stupid_hash, stupid_comp, 16);
+        if (!map) {
+                fprintf(stderr,
+                        "<%s:%d>\tCould not create map\n",
+                        __func__, __LINE__);
+                exit(1);
+        }
+
         int i = 1;
         if (map->hash_func(&i) != stupid_hash(&i)) {
-                fprintf(stderr, "<%s:%d>\tSomething wrong with hash function\n", __func__, __LINE__);
+                fprintf(stderr,
+                        "<%s:%d>\tSomething wrong with hash function\n",
+                        __func__, __LINE__);
                 exit(1);
         }
+
+        printf("passed %s\n",__func__);
 }
 
-hashmap_t *test_put(hashmap_t *map)
+void test_put()
 {
+        hashmap_t *map = create_map(stupid_hash, stupid_comp, 16);
+        if (!map) {
+                fprintf(stderr,
+                        "<%s:%d>\tCould not create map\n",
+                        __func__, __LINE__);
+                exit(1);
+        }
 
         for (int i = 1; i <= 16; i++) {
                 int *key = malloc(sizeof(int));
                 int *val = malloc(sizeof(int));
                 *key = i;
                 *val = -i;
-                printf("put_elem(%d,%d,map)\n", *key,*val);
                 map = put_elem(key, val, map);
         }
 
-        return map;
+        
+        printf("passed %s\n",__func__);
 }
 
-void test_get(hashmap_t *map)
+void test_get()
 {
+        hashmap_t *map = create_map(stupid_hash, stupid_comp, 16);
+        if (!map) {
+                fprintf(stderr,
+                        "<%s:%d>\tCould not create map\n",
+                        __func__, __LINE__);
+                exit(1);
+        }
+
+        for (int i = 1; i <= 16; i++) {
+                int *key = malloc(sizeof(int));
+                int *val = malloc(sizeof(int));
+                *key = i;
+                *val = -i;
+                map = put_elem(key, val, map);
+        }
+
+
         for (int i = -4; i <= 16; i++) {
                 int *elem = (int *)get_elem(&i, map);
-                if (elem)
-                        printf("found elem %d = %d!\n", i, *elem);
-                else
-                        printf("couldn't find %d = ?\n", i);
+                
+                if (i < 1) {
+                        if (elem) {
+                                fprintf(stderr,
+                                        "<%s:%d>\terr, found elem w key: %d\n",
+                                        __func__,__LINE__,i);
+                                exit(1);
+                        }
+                        
+                }
+                else if (!elem) {
+                        fprintf(stderr,
+                                "<%s:%d\tshould've found elem with key: %d\n",
+                                __func__,__LINE__,i);
+                        exit(1);
+
+                }
         }
+
+        printf("passed %s\n",__func__);
 }
 
 void test_concat()
@@ -102,19 +155,17 @@ void test_concat()
         }
 
         dest = put_map(src, dest);
-        printf("managed to concat maps\n");
 
         for (int i = 1; i <=32; i ++) {
                 int val = *(int *)get_elem(&i, dest);
-                if (!val || val != i)
-                        printf("couldn't find element in concat map\n");
+                if (!val || val != i) {
+                        fprintf(stderr,
+                                "<%s:%d>\tCouldn't find elem w key: %d\n",
+                                __func__,__LINE__,i);
+                        exit(1);
+                }
         }
 
         free_map(dest);
-}
-
-void test_free(hashmap_t *map)
-{
-        free_map(map);
-        printf("freed map using free_map function\n");
+        printf("passed %s\n",__func__);
 }

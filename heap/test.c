@@ -22,6 +22,7 @@ int main(void)
         test_peek_poll();
         test_heap_sort();
         test_add_heap();
+        printf("----------------\nall tests passed\n----------------\n");
         return 0;
 }
 
