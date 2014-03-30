@@ -27,7 +27,7 @@ int main(void)
 
 void test_create_del()
 {
-        bheap_t *heap = create_bheap(silly_comp, 16);
+        bheap_t *heap = create_heap(silly_comp, 16);
         if (!heap) {
                 fprintf(stderr, "<%s:%d>\tFailed in creating heap\n",
                         __func__,
@@ -35,13 +35,13 @@ void test_create_del()
                 exit(1);
         }
 
-        free_bheap(heap);
+        free_heap(heap);
         printf("passed %s\n",__func__);
 }
 
 void test_insert_one()
 {
-        bheap_t *heap = create_bheap(silly_comp, 16);
+        bheap_t *heap = create_heap(silly_comp, 16);
         if (!heap) {
                 fprintf(stderr,
                         "Couldn't create heap in %s:%d\n",
@@ -62,13 +62,13 @@ void test_insert_one()
                 exit(1);
         }
 
-        free_bheap(heap);
+        free_heap(heap);
         printf("passed %s\n",__func__);
 }
 
 void test_insert_many()
 {
-        bheap_t *heap = create_bheap(silly_comp, 16);
+        bheap_t *heap = create_heap(silly_comp, 16);
         if (!heap) {
                 fprintf(stderr,
                         "Couldn't create heap in %s:%d\n",
@@ -94,13 +94,13 @@ void test_insert_many()
                 exit(1);
         }
 
-        free_bheap(heap);
+        free_heap(heap);
         printf("passed %s\n",__func__);
 }
 
 void test_peek_poll()
 {
-        bheap_t *heap = create_bheap(silly_comp, 16);
+        bheap_t *heap = create_heap(silly_comp, 16);
         if (!heap) {
                 fprintf(stderr,
                         "Couldn't create heap in %s:%d\n",
@@ -139,13 +139,13 @@ void test_peek_poll()
         }
 
 
-        free_bheap(heap);
+        free_heap(heap);
         printf("passed %s\n",__func__);
 }
 
 void test_heap_sort()
 {
-        bheap_t *heap = create_bheap(silly_comp, 16);
+        bheap_t *heap = create_heap(silly_comp, 16);
         if (!heap) {
                 fprintf(stderr,
                         "Couldn't create heap in %s:%d\n",
@@ -171,14 +171,14 @@ void test_heap_sort()
                 }
         }
 
-        free_bheap(heap);
+        free_heap(heap);
         printf("passed %s\n",__func__);
 }
 
 void test_add_heap()
 {
-        bheap_t *src    = create_bheap(silly_comp, 16);
-        bheap_t *dest   = create_bheap(silly_comp, 16);
+        bheap_t *src    = create_heap(silly_comp, 16);
+        bheap_t *dest   = create_heap(silly_comp, 16);
         if (!src || !dest) {
                 fprintf(stderr,
                         "Couldn't create heap in %s:%d\n",

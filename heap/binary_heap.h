@@ -21,7 +21,7 @@ typedef struct bheap_t {
  *              s, initial size
  * Returns:     a pointer to the binary heap
  */
-bheap_t *create_bheap(int (*)(void *, void *), size_t);
+bheap_t *create_heap(int (*)(void *, void *), size_t);
 
 /*
  * Insert an element into the binary heap
@@ -61,4 +61,4 @@ bheap_t *add_heap(bheap_t *, bheap_t *);
  * Will free the entire heap with all its elements from memory
  * Post:        all pointers into the heap are considered invalid
  */
-void free_bheap(bheap_t *);
+void free_heap(bheap_t *);
