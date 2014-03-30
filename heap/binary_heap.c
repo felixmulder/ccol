@@ -35,9 +35,9 @@ bheap_t *add_elem(void *elem, bheap_t *heap)
 
         /* While parent node is smaller, bubble elem up */
         if (heap->index > 0) {
-                size_t index    = heap->index;
-                size_t pindex   = (heap->index - 1) / 2;
-                void *parent    = heap->elems[pindex];
+                size_t  index   = heap->index;
+                size_t  pindex  = (heap->index - 1) / 2;
+                void    *parent = heap->elems[pindex];
 
                 while (index > 0 && heap->comp_func(parent,elem) < 0) {
                         void *temp = parent;
@@ -69,37 +69,29 @@ void *poll_root(bheap_t *heap)
                 heap->index     = 0;
                 heap->elems[0]  = NULL;
         } else {
-                heap->elems[0]  = heap->elems[heap->index-1];
-                heap->index--;
+                heap->elems[0] = heap->elems[--heap->index];
 
-                size_t index            = 0;
-                size_t index_left       = 1;
-                size_t index_right      = 2;
-                void *current           = heap->elems[index];
-                void *left              = heap->elems[index_left];
-                void *right             = heap->elems[index_right];
-                
-                while ((heap->comp_func(current,left) < 0 ||
-                       heap->comp_func(current,right) < 0) &&
-                       index_left < heap->index && index_right < heap->index) {
-                        
-                        void *root = heap->elems[index];
-                        if (heap->comp_func(current,left) < 0) {
-                                heap->elems[index] = heap->elems[index_left];
-                                heap->elems[index_left] = root;
-                                index = index_left;
-                        } else {
-                                heap->elems[index] = heap->elems[index_right];
-                                heap->elems[index_right] = root;
-                                index = index_right;
-                        }
+                /* Bubble up elements larger than the replaced node */
+                size_t index    = 0;
+                size_t child    = 1;
+                while (child < heap->index) {
 
-                        index_left      = 2 * index + 1;
-                        index_right     = 2 * index + 2;
+                        void *parent_p  = heap->elems[index];
+                        void *child_p   = heap->elems[child];
 
-                        current         = heap->elems[index];
-                        left            = heap->elems[index_left];
-                        right           = heap->elems[index_right];
+                        if (child + 1 < heap->index &&
+                            heap->comp_func(child_p, heap->elems[child+1]) < 0)
+                                child++;
+
+                        child_p = heap->elems[child];
+
+                        if (heap->comp_func(parent_p, child_p) < 0) {
+                                heap->elems[index] = child_p;
+                                heap->elems[child] = parent_p;
+                                index = child;
+                                child = index * 2 + 1;
+                        } else /* Bubble up finished! */
+                                break;
                 }
         }
 

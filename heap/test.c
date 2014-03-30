@@ -6,6 +6,7 @@ void test_create_del();
 void test_insert_one();
 void test_insert_many();
 void test_peek_poll();
+void test_heap_sort();
 
 int silly_comp(void *elem, void *other)
 {
@@ -18,6 +19,7 @@ int main(void)
         test_insert_one();
         test_insert_many();
         test_peek_poll();
+        test_heap_sort();
         return 0;
 }
 
@@ -58,6 +60,7 @@ void test_insert_one()
                 exit(1);
         }
 
+        free_bheap(heap);
         printf("passed %s\n",__func__);
 }
 
@@ -89,6 +92,7 @@ void test_insert_many()
                 exit(1);
         }
 
+        free_bheap(heap);
         printf("passed %s\n",__func__);
 }
 
@@ -132,5 +136,39 @@ void test_peek_poll()
                 exit(1);
         }
 
+
+        free_bheap(heap);
+        printf("passed %s\n",__func__);
+}
+
+void test_heap_sort()
+{
+        bheap_t *heap = create_bheap(silly_comp, 16);
+        if (!heap) {
+                fprintf(stderr,
+                        "Couldn't create heap in %s:%d\n",
+                        __func__,
+                        __LINE__);
+                exit(1);
+        }
+
+
+        for (int i = 1; i <= 32; i++) {
+                int *elem = malloc(sizeof(int));
+                *elem = i;
+                heap = add_elem(elem, heap);
+        }
+
+        for (int i = 32; i > 0; i--) {
+                int elem = *(int *)poll_root(heap);
+                if (elem != i) {
+                        fprintf(stderr,
+                                "<%s:%d>\tExpected \"%d\", found \"%d\"\n",
+                                __func__,__LINE__,i,elem);
+                        exit(1);
+                }
+        }
+
+        free_bheap(heap);
         printf("passed %s\n",__func__);
 }
