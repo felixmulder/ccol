@@ -12,6 +12,7 @@ hashmap_t *create_map(int (*hash_func)(void *),
                 map->size       = 0;
                 map->threshold  = 0.75;
 
+                /* Let's remove this motherf*cker */
                 for (int i = 0; i < s; i++)
                         map->nodes[i] = NULL;
         }
