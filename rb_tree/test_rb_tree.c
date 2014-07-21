@@ -11,7 +11,7 @@ int main(void)
         return 0;
 }
 
-static void printe(const char *msg,const char *func, int line)
+static void printe(const char *msg, const char *func, int line)
 {
         printf("<%s:%d>\t%s\n", func, line, msg);
 }
