@@ -54,7 +54,7 @@ bheap_t *add_elem(void *elem, bheap_t *heap)
         return heap;
 }
 
-void const *peek_root(bheap_t *heap)
+const void *peek_root(bheap_t *heap)
 {
         return heap->elems[0];
 }

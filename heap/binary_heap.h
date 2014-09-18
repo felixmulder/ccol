@@ -36,7 +36,7 @@ bheap_t *add_elem(void *, bheap_t *);
  * Removes the root and returns it
  * Params:      heap
  */
-void const *peek_root(bheap_t *);
+const void *peek_root(bheap_t *);
 
 /*
  * Removes and returns the root element of the heap
